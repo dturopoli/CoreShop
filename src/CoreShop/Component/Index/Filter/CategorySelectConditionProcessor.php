@@ -94,9 +94,16 @@ class CategorySelectConditionProcessor implements FilterConditionProcessorInterf
         }
 
         if (!empty($value)) {
-            $value = '%,' . trim((string)$value) . ',%';
             $fieldName = $isPrecondition ? 'PRECONDITION_' . $field : $field;
-            $list->addCondition(new LikeCondition($field, 'both', $value), $fieldName);
+
+            if (!is_array($value)) {
+                $value = [$value];
+            }
+
+            foreach ($value as $v) {
+                $v  = '%,' . trim((string)$v) . ',%';
+                $list->addCondition(new LikeCondition($field, 'both', $v), $fieldName);
+            }
         }
 
         return $currentFilter;
